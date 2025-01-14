@@ -3,7 +3,10 @@ package com.learnSpringBoot.eCom.services;
 import com.learnSpringBoot.eCom.exceptions.APIException;
 import com.learnSpringBoot.eCom.exceptions.ResourceNotFoundException;
 import com.learnSpringBoot.eCom.model.Category;
+import com.learnSpringBoot.eCom.payload.CategoryDTO;
+import com.learnSpringBoot.eCom.payload.CategoryResponse;
 import com.learnSpringBoot.eCom.repository.CategoryRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,27 +19,44 @@ public class CategoryServiceImpl implements CategoryService {
 
     private CategoryRepository categoryRepository;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    private ModelMapper modelMapper;
+
+    public CategoryServiceImpl(CategoryRepository categoryRepository, ModelMapper modelMapper) {
         this.categoryRepository = categoryRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
-    public List<Category> getAllCategories() {
+    public CategoryResponse getAllCategories() {
         List<Category> allCategories = categoryRepository.findAll();
         if (allCategories.isEmpty()) {
             throw new APIException("No Category Created till Now");
         }
-        return categoryRepository.findAll();
+
+        // Entity To DTO
+        List<CategoryDTO> categoryDTOS = allCategories.stream()
+                .map(category -> modelMapper.map(category, CategoryDTO.class)).toList();
+
+        CategoryResponse categoryResponse = new CategoryResponse();
+
+        categoryResponse.setContent(categoryDTOS);
+        return categoryResponse;
     }
 
     @Override
-    public void createCategory(Category category) {
-        Category savedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
-        if (savedCategory != null) {
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+        // DTO to Entity
+        Category category = modelMapper.map(categoryDTO,Category.class);
+        Category categoryFromDB = categoryRepository.findByCategoryName(category.getCategoryName());
+        if (categoryFromDB != null) {
             //System.out.println(savedCategory.getCategoryId()+" "+savedCategory.getCategoryName());
             throw new APIException("Category with " + category.getCategoryName() + " already Exists");
         }
-        categoryRepository.save(category);
+        Category savedCategory = categoryRepository.save(category);
+
+        // Converting Entity to DTO before Returning to controller
+        CategoryDTO savedCategoryDTO = modelMapper.map(savedCategory,CategoryDTO.class);
+        return savedCategoryDTO;
     }
 
     @Override

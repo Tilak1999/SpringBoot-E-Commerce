@@ -1,14 +1,16 @@
 package com.learnSpringBoot.eCom.services;
 
 import com.learnSpringBoot.eCom.model.Category;
+import com.learnSpringBoot.eCom.payload.CategoryDTO;
+import com.learnSpringBoot.eCom.payload.CategoryResponse;
 
 import java.util.List;
 
 public interface CategoryService {
 
-    List<Category> getAllCategories();
+    CategoryResponse getAllCategories();
 
-    void createCategory(Category category);
+    CategoryDTO createCategory(CategoryDTO categoryDTO);
 
     String deleteCategoryById(Long categoryId);
 
