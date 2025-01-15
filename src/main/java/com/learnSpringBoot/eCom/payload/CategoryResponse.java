@@ -12,4 +12,9 @@ import java.util.List;
 // From Server to Client
 public class CategoryResponse {
     List<CategoryDTO> content;
+    private Integer pageNumber;
+    private Integer pageSize;
+    private Long totalElements;
+    private int totalPages;
+    private boolean lastPage;
 }

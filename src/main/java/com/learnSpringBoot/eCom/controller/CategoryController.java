@@ -1,5 +1,6 @@
 package com.learnSpringBoot.eCom.controller;
 
+import com.learnSpringBoot.eCom.config.AppConstants;
 import com.learnSpringBoot.eCom.model.Category;
 import com.learnSpringBoot.eCom.payload.CategoryDTO;
 import com.learnSpringBoot.eCom.payload.CategoryResponse;
@@ -19,10 +20,16 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+
     // @GetMapping("/public/categories")
     @RequestMapping(value = "/public/categories", method = RequestMethod.GET)
-    public ResponseEntity<CategoryResponse> getAllCategories() {
-        CategoryResponse categoryResponse = categoryService.getAllCategories();
+    public ResponseEntity<CategoryResponse> getAllCategories(
+            @RequestParam(name="pageNumber",defaultValue = AppConstants.PAGE_NUMBER,required = false) Integer pageNumber,
+            @RequestParam(name="pageSize",defaultValue = AppConstants.PAGE_SIZE,required = false) Integer pageSize,
+            @RequestParam(name = "sortBy",defaultValue = AppConstants.SORT_CATEGORIES_BY,required = false) String sortBy,
+            @RequestParam(name="sortOrder",defaultValue = AppConstants.SORT_DIR,required = false) String sortOrder) {
+
+        CategoryResponse categoryResponse = categoryService.getAllCategories(pageNumber,pageSize,sortBy,sortOrder);
         return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }
 
@@ -33,19 +40,19 @@ public class CategoryController {
     }
 
     @DeleteMapping("/admin/categories/{categoryId}")
-    public ResponseEntity<String> deleteCategoryById(@PathVariable Long categoryId) {
+    public ResponseEntity<CategoryDTO> deleteCategoryById(@PathVariable Long categoryId) {
 
-        String status = categoryService.deleteCategoryById(categoryId);
-        return new ResponseEntity<>(status, HttpStatus.OK);
+        CategoryDTO deletedCategory = categoryService.deleteCategoryById(categoryId);
+        return new ResponseEntity<>(deletedCategory, HttpStatus.OK);
 //            return ResponseEntity.ok(status);
 //            return ResponseEntity.status(HttpStatus.OK).body(status);
     }
 
     @PutMapping("/admin/categories/{categoryId}")
-    public ResponseEntity<String> updateCategory(@Valid @RequestBody Category category, @PathVariable Long categoryId) {
+    public ResponseEntity<CategoryDTO> updateCategory(@Valid @RequestBody CategoryDTO categoryDTO, @PathVariable Long categoryId) {
 
-        Category updatedCategory = categoryService.updateCategory(category, categoryId);
-        return ResponseEntity.status(HttpStatus.OK).body("Category Updated Successfully");
+        CategoryDTO updatedCategoryDTO = categoryService.updateCategory(categoryDTO, categoryId);
+        return new ResponseEntity<>(updatedCategoryDTO,HttpStatus.OK);
 
     }
 }
