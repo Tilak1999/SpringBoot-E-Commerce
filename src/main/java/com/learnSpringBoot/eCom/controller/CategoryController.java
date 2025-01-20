@@ -1,7 +1,6 @@
 package com.learnSpringBoot.eCom.controller;
 
 import com.learnSpringBoot.eCom.config.AppConstants;
-import com.learnSpringBoot.eCom.model.Category;
 import com.learnSpringBoot.eCom.payload.CategoryDTO;
 import com.learnSpringBoot.eCom.payload.CategoryResponse;
 import com.learnSpringBoot.eCom.services.CategoryService;
@@ -24,12 +23,12 @@ public class CategoryController {
     // @GetMapping("/public/categories")
     @RequestMapping(value = "/public/categories", method = RequestMethod.GET)
     public ResponseEntity<CategoryResponse> getAllCategories(
-            @RequestParam(name="pageNumber",defaultValue = AppConstants.PAGE_NUMBER,required = false) Integer pageNumber,
-            @RequestParam(name="pageSize",defaultValue = AppConstants.PAGE_SIZE,required = false) Integer pageSize,
-            @RequestParam(name = "sortBy",defaultValue = AppConstants.SORT_CATEGORIES_BY,required = false) String sortBy,
-            @RequestParam(name="sortOrder",defaultValue = AppConstants.SORT_DIR,required = false) String sortOrder) {
+            @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_CATEGORIES_BY, required = false) String sortBy,
+            @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_DIR, required = false) String sortOrder) {
 
-        CategoryResponse categoryResponse = categoryService.getAllCategories(pageNumber,pageSize,sortBy,sortOrder);
+        CategoryResponse categoryResponse = categoryService.getAllCategories(pageNumber, pageSize, sortBy, sortOrder);
         return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }
 
@@ -52,7 +51,7 @@ public class CategoryController {
     public ResponseEntity<CategoryDTO> updateCategory(@Valid @RequestBody CategoryDTO categoryDTO, @PathVariable Long categoryId) {
 
         CategoryDTO updatedCategoryDTO = categoryService.updateCategory(categoryDTO, categoryId);
-        return new ResponseEntity<>(updatedCategoryDTO,HttpStatus.OK);
+        return new ResponseEntity<>(updatedCategoryDTO, HttpStatus.OK);
 
     }
 }
