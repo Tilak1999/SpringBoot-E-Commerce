@@ -32,7 +32,7 @@ import java.util.Set;
 public class WebSecurityConfig {
 
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
@@ -54,7 +54,7 @@ public class WebSecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setUserDetailsService(userDetailsServiceImpl);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
@@ -70,10 +70,10 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/ali/auth/**").permitAll()
+                        auth.requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/v3/api-docs/**").permitAll()
                                 .requestMatchers("/h2-console/**").permitAll()
-                                .requestMatchers("/api/admin/**").permitAll()
+                                //.requestMatchers("/api/admin/**").permitAll()
                                 .requestMatchers("/api/public/**").permitAll()
                                 .requestMatchers("/swagger-ui/**").permitAll()
                                 .requestMatchers("/api/test/**").permitAll()
@@ -129,12 +129,12 @@ public class WebSecurityConfig {
 
             // Create users if not already present
             if (!userRepository.existsByUserName("user1")) {
-                User user1 = new User("user1", "user1@example.com", passwordEncoder.encode("password1"));
+                User user1 = new User("user1", "user1@example.com", passwordEncoder.encode("userpassword1"));
                 userRepository.save(user1);
             }
 
             if (!userRepository.existsByUserName("seller1")) {
-                User seller1 = new User("seller1", "seller1@example.com", passwordEncoder.encode("password2"));
+                User seller1 = new User("seller1", "seller1@example.com", passwordEncoder.encode("sellerpassword1"));
                 userRepository.save(seller1);
             }
 
