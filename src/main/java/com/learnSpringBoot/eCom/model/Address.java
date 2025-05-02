@@ -1,10 +1,8 @@
 package com.learnSpringBoot.eCom.model;
 
-import com.sun.jdi.connect.ListeningConnector;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import jdk.jfr.BooleanFlag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

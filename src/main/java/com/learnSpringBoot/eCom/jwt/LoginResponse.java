@@ -7,9 +7,9 @@ public class LoginResponse {
     private String username;
     private List<String> roles;
 
-    public LoginResponse(String jwtToken, String username, List<String> roles) {
-        this.jwtToken = jwtToken;
+    public LoginResponse(String username,String jwtToken, List<String> roles) {
         this.username = username;
+        this.jwtToken = jwtToken;
         this.roles = roles;
     }
 

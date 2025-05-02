@@ -6,6 +6,7 @@ import com.learnSpringBoot.eCom.model.Role;
 import com.learnSpringBoot.eCom.model.User;
 import com.learnSpringBoot.eCom.repository.RoleRepository;
 import com.learnSpringBoot.eCom.repository.UserRepository;
+import com.learnSpringBoot.eCom.security.response.MessageResponse;
 import com.learnSpringBoot.eCom.securityServices.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +74,7 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        LoginResponse response = new LoginResponse(jwtToken, userDetailsImpl.getUsername(), roles);
+        LoginResponse response = new LoginResponse( userDetailsImpl.getUsername(),jwtToken, roles);
 
         return ResponseEntity.ok(response);
     }
@@ -82,14 +83,15 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupResquest) {
         // check if username is already taken
         if (userRespository.existsByUserName(signupResquest.getUsername())) {
-            return ResponseEntity.badRequest().body(new SignupResponse("Error: Username is already taken!"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
         }
 
         // check if email is already taken
         if (userRespository.existsByEmail(signupResquest.getEmail())) {
-            return ResponseEntity.badRequest().body(new SignupResponse("Error: Email is already in use!"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
         }
 
+        // Create
         User user = new User(signupResquest.getUsername(), signupResquest.getEmail(),
                 encoder.encode(signupResquest.getPassword()));
 
@@ -126,9 +128,8 @@ public class AuthController {
                 }
             });
         }
-
         user.setRoles(roles);
         userRespository.save(user);
-        return ResponseEntity.ok(new SignupResponse("User registered successfully!"));
+        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }
